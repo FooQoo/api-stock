@@ -1,0 +1,11 @@
+requests
+mysqlclient
+django
+djangorestframework
+django-filter
+django-heroku
+whitenoise
+django-toolbelt
+gunicorn
+django-oauth-toolkit
+djangorestframework-jwt
