@@ -1,13 +1,17 @@
 from rest_framework import serializers
 from .models import Article, Tag, TweetTask
-from django.contrib.auth.models import User
-from django.contrib.auth.hashers import make_password
 
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ('name',)
+
+    def create(self, validated_data):
+        tag = Tag.objects.filter(name=validated_data['name']).first()
+        if tag is None:
+            tag = Tag.objects.create(name=validated_data['name'])
+        return tag
 
 
 class ArticleSerializer(serializers.ModelSerializer):
@@ -27,13 +31,11 @@ class ArticleSerializer(serializers.ModelSerializer):
         )
 
         for tag_data in tags:
-            tag = Tag.objects.filter(**tag_data).first()
-            if tag is None:
-                tag = Tag.objects.create(name=tag_data["name"])
-            article.tags.add(tag)
+            tag = Tag.objects.filter(name=tag_data['name']).first()
+            if tag is not None:
+                article.tags.add(tag)
 
         article.save()
-        TweetTask.objects.create(article=article)
         return article
 
 
@@ -44,3 +46,8 @@ class TweetTaskSerializer(serializers.ModelSerializer):
         model = TweetTask
         read_only_fields = ('updated_at', 'created_at')
         fields = ('task_id', 'article', 'status')
+
+    def create(self, validated_data):
+        article = Article.objects.get(article_id=validated_data['article_id'])
+        task = TweetTask.objects.create(article=article)
+        return task

@@ -1,16 +1,16 @@
-import json
-
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 from urllib.parse import urlencode
+from django.contrib.auth.models import User
 
 
 class ArticleViewTests(APITestCase):
     fixtures = ['db_init.json']
 
     def setUp(self):
-        pass
+        self.user = User.objects.create(username='user', email='user@foo.com', password='pass')
+        self.client.force_login(self.user)
 
     def test_create(self):
         payload = {
@@ -19,16 +19,23 @@ class ArticleViewTests(APITestCase):
             'created_at': "2017-12-10T10:00:00+09:00",
             'tags': [{'name': 'maven'}, {'name': 'StreamingAPI'}],
         }
+
         url = reverse("article-list")
         response = self.client.post(url, data=payload, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_destroy(self):
+        url = reverse("article-detail", args=['00000000000000000000000000000000'])
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
 
 class TweetTaskViewTests(APITestCase):
     fixtures = ['db_init.json']
 
     def setUp(self):
-        pass
+        self.user = User.objects.create(username='user', email='user@foo.com', password='pass')
+        self.client.force_login(self.user)
 
     def test_get(self):
         query = urlencode({'status': 'waiting', 'ordering': 'updated_at', 'limit': 1})

@@ -4,12 +4,15 @@ from django.db import models
 
 class Tag(models.Model):
     tag_id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=30, db_index=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Article(models.Model):
     article_id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
-    title = models.TextField(blank=False, null=False)
+    title = models.CharField(max_length=140, blank=False, null=False, db_index=True, unique=True)
     url = models.TextField(blank=False, null=False)
     tags = models.ManyToManyField(Tag, blank=True)
     created_at = models.DateTimeField(blank=True, null=True)
@@ -35,4 +38,4 @@ class TweetTask(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.task_id
+        return self.article.title
