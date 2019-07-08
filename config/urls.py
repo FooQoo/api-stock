@@ -6,6 +6,6 @@ from rest_framework_jwt.views import obtain_jwt_token
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^api-token-auth/', obtain_jwt_token),
+    url(r'^api-token-auth/', obtain_jwt_token, name="jwt"),
     url(r'^stock/', include(my_stock_router.urls)),
 ]

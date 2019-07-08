@@ -9,3 +9,4 @@ django-toolbelt
 gunicorn
 django-oauth-toolkit
 djangorestframework-jwt
+whitenoise

@@ -9,3 +9,4 @@ heroku config:add HOST="${HOST}"
 heroku config:add USER="${USER}"
 heroku config:add PORT="${PORT}"
 heroku config:add PASSWORD="${PASSWORD}"
+heroku config:set DISABLE_COLLECTSTATIC=1

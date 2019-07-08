@@ -1,1 +1,1 @@
-web: sh -c 'python manage.py migrate stock && gunicorn config.wsgi --log-file -'
+web: sh -c 'python manage.py collectstatic && python manage.py migrate stock && gunicorn config.wsgi --log-file -'
